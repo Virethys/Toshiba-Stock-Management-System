@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toshiba Stock</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="login-container">
+      <h2>Login</h2>
+      <input type="text" id="login-username" placeholder="Username" />
+      <input type="password" id="login-password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <p>
+        Don't have an account? <a href="#" onclick="showRegister()">Register</a>
+      </p>
+    </div>
+    <div class="app-layout">
+      <nav>
+        <h2>Toshiba Stocks</h2>
+        <div
+          id="user-profile-nav"
+          class="user-profile-nav"
+          onclick="showUserProfile()"
+        >
+          <img
+            src="https://ui-avatars.com/api/?name=User"
+            id="nav-user-avatar"
+            class="user-avatar"
+            alt="User"
+          />
+          <span id="nav-username"></span>
+        </div>
+        <button onclick="showAuditLog()" style="margin-left: 20px">
+          Audit Log
+        </button>
+      </nav>
+      <aside id="sidebar">
+        <h3>Item List</h3>
+        <ul id="item-quick-access"></ul>
+        <button id="add-item-btn" onclick="showAddItemModal()">Add Item</button>
+      </aside>
+      <main id="main-content">
+        <div id="items-container"></div>
+      </main>
+    </div>
+
+    <div id="register-container" style="display: none">
+      <h2>Register</h2>
+      <input type="text" id="register-username" placeholder="Username" />
+      <input type="password" id="register-password" placeholder="Password" />
+      <button onclick="register()">Register</button>
+      <p>
+        Already have an account? <a href="#" onclick="showLogin()">Login</a>
+      </p>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div id="add-item-modal" class="modal" tabindex="-1">
+      <div class="modal-content add-item-modal-content">
+        <div class="modal-header-flex">
+          <h3>Add New Item</h3>
+          <button
+            class="modal-close-x"
+            onclick="closeModal('add-item-modal')"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+        </div>
+        <form
+          id="add-item-form"
+          autocomplete="off"
+          style="display: flex; flex-direction: column; gap: 18px"
+        >
+          <input
+            type="text"
+            id="item-name"
+            placeholder="Item Name"
+            maxlength="50"
+            required
+          />
+          <div style="display: flex; justify-content: flex-end; gap: 10px">
+            <button type="submit">Add</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="user-profile-modal" class="modal" style="display: none">
+      <div class="modal-content user-profile-modal-content">
+        <div class="modal-header-flex">
+          <h3>User Profile</h3>
+          <button
+            class="modal-close-x"
+            onclick="closeModal('user-profile-modal')"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="profile-info">
+          <div class="profile-avatar-section">
+            <img
+              src="https://ui-avatars.com/api/?name=User"
+              id="profile-avatar"
+              class="user-avatar-large"
+              alt="User"
+            />
+            <input
+              type="file"
+              id="profile-image-input"
+              accept="image/*"
+              style="display: none"
+            />
+            <button
+              type="button"
+              class="profile-upload-btn"
+              onclick="document.getElementById('profile-image-input').click()"
+            >
+              Change Photo
+            </button>
+            <button
+              type="button"
+              class="profile-delete-btn"
+              onclick="deleteProfileImage()"
+            >
+              Delete Photo
+            </button>
+          </div>
+          <div class="profile-details">
+            <p>
+              <strong>Username:</strong> <span id="profile-username"></span>
+            </p>
+            <p><strong>Email:</strong> <span id="profile-email"></span></p>
+            <p>
+              <strong>Password:</strong> <span id="profile-password"></span>
+            </p>
+            <div class="profile-logout-btn-wrapper">
+              <button
+                type="button"
+                class="profile-logout-btn"
+                onclick="logout()"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="table-modal" class="modal" style="display: none">
+      <div class="modal-content table-modal-content">
+        <div class="modal-header-flex">
+          <h3 id="table-modal-title"></h3>
+          <button
+            class="modal-close-x"
+            onclick="closeModal('table-modal')"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+        </div>
+        <div id="table-modal-body"></div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Stock Modal -->
+    <div id="stock-modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header-flex">
+          <h3 id="stock-modal-title">Stock In</h3>
+          <button
+            class="modal-close-x"
+            onclick="closeModal('stock-modal')"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+        </div>
+        <form id="stock-modal-form" autocomplete="off">
+          <input type="hidden" id="stock-modal-item" />
+          <input type="hidden" id="stock-modal-index" />
+          <div style="margin-bottom: 12px">
+            <label>
+              Date:<br />
+              <input
+                type="date"
+                id="stock-modal-date"
+                required
+                style="width: 100%"
+              />
+            </label>
+          </div>
+          <div style="margin-bottom: 12px">
+            <label>
+              Stock In:<br />
+              <input
+                type="number"
+                id="stock-modal-in"
+                min="0"
+                style="width: 100%"
+              />
+            </label>
+          </div>
+          <div style="margin-bottom: 12px">
+            <label>
+              Stock Out:<br />
+              <input
+                type="number"
+                id="stock-modal-out"
+                min="0"
+                style="width: 100%"
+              />
+            </label>
+          </div>
+          <div style="margin-bottom: 12px">
+            <label>
+              Description:<br />
+              <input
+                type="text"
+                id="stock-modal-desc"
+                maxlength="100"
+                style="width: 100%"
+              />
+            </label>
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: 10px">
+            <button type="button" id="stock-modal-delete-btn">Delete</button>
+            <button type="submit" id="stock-modal-save-btn">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="audit-log-modal" class="modal" style="display: none">
+      <div class="modal-content" style="max-width: 700px; min-width: 340px">
+        <div class="modal-header-flex">
+          <h3>Audit Log</h3>
+          <button
+            class="modal-close-x"
+            onclick="closeModal('audit-log-modal')"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+        </div>
+        <div
+          id="audit-log-body"
+          style="max-height: 400px; overflow-y: auto"
+        ></div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
