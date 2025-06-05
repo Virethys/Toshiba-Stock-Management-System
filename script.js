@@ -135,7 +135,8 @@ function addItem() {
   // Save to localStorage
   items.push(itemName);
   localStorage.setItem("stockItems", JSON.stringify(items));
-  addAuditLog("Add Item", `Added item "${itemName}"`);
+  // Add Item
+  addAuditLog("Add Item", `User added a new item: <b>${itemName}</b>.`);
   loadItems();
 
   // Clear input after adding
@@ -186,7 +187,6 @@ function loadItems() {
       </div>
       <div class="export-actions">
         <button onclick="exportTableToExcel('${safeItemName}')">Export Excel</button>
-        <button onclick="exportTableToPDF('${safeItemName}')">Export PDF</button>
       </div>
       <div class="scrollable-table-wrapper">
         <table>
@@ -318,12 +318,21 @@ document.getElementById("stock-modal-form").onsubmit = function (e) {
   closeModal("stock-modal");
 
   // After adding a stock entry
-  addAuditLog("Add Stock", `Added stock entry to "${item}" on ${date}`);
+  addAuditLog(
+    "Add Stock",
+    `User added a stock entry to <b>${item}</b> on <b>${date}</b> 
+   (${stockIn !== "-" ? `Stock In: <b>${stockIn}</b>` : ""}${
+      stockOut !== "-" ? `Stock Out: <b>${stockOut}</b>` : ""
+    }${description ? `, Description: <b>${description}</b>` : ""}).`
+  );
 
   // After editing a stock entry
   addAuditLog(
     "Edit Stock",
-    `Edited stock entry #${idx} in "${item}" on ${date}`
+    `User edited stock entry #${idx} in <b>${item}</b> on <b>${date}</b> 
+   (${stockIn !== "-" ? `Stock In: <b>${stockIn}</b>` : ""}${
+      stockOut !== "-" ? `Stock Out: <b>${stockOut}</b>` : ""
+    }${description ? `, Description: <b>${description}</b>` : ""}).`
   );
 };
 
@@ -378,7 +387,7 @@ function deleteStockTable(btn) {
     // After deleting a stock table
     addAuditLog(
       "Delete Item",
-      `Deleted item "${itemName}" and its stock table`
+      `User deleted the item <b>${itemName}</b> and all its stock records.`
     );
   }
 }

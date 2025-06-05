@@ -263,7 +263,7 @@ table {
   table-layout: auto; /* Ensure table can expand */
   border-collapse: separate;
   border-spacing: 0;
-  margin-top: 20px;
+  margin-top: 7px;
   background: #f8fafc;
   border-radius: 10px;
   overflow: hidden;
@@ -798,4 +798,10 @@ button:hover,
 #audit-log-body th {
   background: #f1f5f9;
   font-weight: 600;
+}
+
+.export-actions {
+  justify-content: flex-end;
+  display: flex;
+  margin-top: 5px;
 }
